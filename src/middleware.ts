@@ -6,3 +6,7 @@ export async function middleware(request: NextRequest) {
     console.log("supabase", supabase);
     return response.value;
 }
+
+export const config = {
+  matcher: ["/((?!.*\\.).*)"],
+};
