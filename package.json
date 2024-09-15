@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "db_dump_seed": "npx supabase db dump --local --data-only --file=supabase/seed.sql",
+    "db_create_migration": "npx supabase db diff --local -f",
     "reset": "npx supabase stop; docker volume rm $(docker volume ls --format '{{.Name}}' --filter label=com.supabase.cli.project=supabase_book); npx supabase start"
   },
   "dependencies": {
@@ -14,6 +16,7 @@
     "@supabase/supabase-js": "^2.45.3",
     "@tabler/icons-react": "^3.14.0",
     "next": "14.2.8",
+    "nodemailer": "^6.9.15",
     "react": "^18",
     "react-dom": "^18",
     "sass": "^1.78.0"
