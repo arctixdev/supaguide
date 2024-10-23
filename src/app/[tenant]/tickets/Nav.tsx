@@ -1,10 +1,11 @@
 "use client";
 import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
+import { urlPath } from "@/utils/url-helpers";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Nav() {
+export default function Nav({ tenant }) {
   const pathname = usePathname();
   const activeProps = { className: "contrast" };
   const inactiveProps = { className: "secondary outline" };
@@ -14,7 +15,7 @@ export default function Nav() {
   useEffect(() => {
     const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") {
-        router.push("/");
+        router.push(urlPath("/", tenant));
       }
     });
     return () => subscription.subscription.unsubscribe();
@@ -26,8 +27,10 @@ export default function Nav() {
         <li>
           <Link
             role="button"
-            href="/tickets"
-            {...(pathname === "/tickets" ? activeProps : inactiveProps)}
+            href={urlPath("/tickets", tenant)}
+            {...(pathname === urlPath("/tickets", tenant)
+              ? activeProps
+              : inactiveProps)}
           >
             Ticket List
           </Link>
@@ -35,8 +38,10 @@ export default function Nav() {
         <li>
           <Link
             role="button"
-            href="/tickets/new"
-            {...(pathname === "/tickets/new" ? activeProps : inactiveProps)}
+            href={urlPath("/tickets/new", tenant)}
+            {...(pathname === urlPath("/tickets/new", tenant)
+              ? activeProps
+              : inactiveProps)}
           >
             Create New Ticket
           </Link>
@@ -44,8 +49,10 @@ export default function Nav() {
         <li>
           <Link
             role="button"
-            href="/tickets/users"
-            {...(pathname === "/tickets/users" ? activeProps : inactiveProps)}
+            href={urlPath("/tickets/users", tenant)}
+            {...(pathname === urlPath("/tickets/users", tenant)
+              ? activeProps
+              : inactiveProps)}
           >
             User List
           </Link>
@@ -54,10 +61,16 @@ export default function Nav() {
 
       <ul>
         <li>
-          <Link role="button" href="/logout" prefetch={false} className="secondary" onClick={(event) => {
-            event.preventDefault();
-            supabase.auth.signOut();
-          }}>
+          <Link
+            role="button"
+            href={urlPath("/logout", tenant)}
+            prefetch={false}
+            className="secondary"
+            onClick={(event) => {
+              event.preventDefault();
+              supabase.auth.signOut();
+            }}
+          >
             Log out
           </Link>
         </li>

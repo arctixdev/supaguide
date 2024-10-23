@@ -34,7 +34,92 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      service_users: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: number
+          supabase_user: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: number
+          supabase_user: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: number
+          supabase_user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_users_supabase_user_fkey"
+            columns: ["supabase_user"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_permission: {
+        Row: {
+          created_at: string
+          id: number
+          service_user: number
+          tenant: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          service_user: number
+          tenant: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          service_user?: number
+          tenant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_permission_service_user_fkey"
+            columns: ["service_user"]
+            isOneToOne: false
+            referencedRelation: "service_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_permission_tenant_fkey"
+            columns: ["tenant"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,6 +1,7 @@
+import { urlPath } from "@/utils/url-helpers";
 import Link from "next/link";
 
-export default function ErrorPage({ searchParams }) {
+export default function ErrorPage({ searchParams, params }) {
     const { type } = searchParams;
     const knownErrors = ["login-failed", "magic-link", "invalid-magic-link"];
     return (
@@ -19,7 +20,7 @@ export default function ErrorPage({ searchParams }) {
                 <strong>Something went wrong. Please try again or contact support</strong>
             )}
             <br /><br />
-            <Link href="/" role="button">
+            <Link href={urlPath("/", params.tenant)} role="button">
                 Go back.
             </Link>
         </div>
