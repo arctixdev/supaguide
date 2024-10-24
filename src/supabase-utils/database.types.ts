@@ -53,17 +53,9 @@ export type Database = {
           id?: number
           supabase_user?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "service_users_supabase_user_fkey"
-            columns: ["supabase_user"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      tenant_permission: {
+      tenant_permissions: {
         Row: {
           created_at: string
           id: number
@@ -84,14 +76,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tenant_permission_service_user_fkey"
+            foreignKeyName: "tenant_permissions_service_user_fkey"
             columns: ["service_user"]
             isOneToOne: false
             referencedRelation: "service_users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "tenant_permission_tenant_fkey"
+            foreignKeyName: "tenant_permissions_tenant_fkey"
             columns: ["tenant"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -120,6 +112,54 @@ export type Database = {
         }
         Relationships: []
       }
+      tickets: {
+        Row: {
+          author_name: string
+          created_at: string
+          created_by: number
+          description: string
+          id: number
+          state: Database["public"]["Enums"]["status_types"]
+          tenant: string
+          title: string
+        }
+        Insert: {
+          author_name: string
+          created_at?: string
+          created_by: number
+          description: string
+          id?: number
+          state?: Database["public"]["Enums"]["status_types"]
+          tenant: string
+          title: string
+        }
+        Update: {
+          author_name?: string
+          created_at?: string
+          created_by?: number
+          description?: string
+          id?: number
+          state?: Database["public"]["Enums"]["status_types"]
+          tenant?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tickets_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "service_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tickets_tenant_fkey"
+            columns: ["tenant"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -128,7 +168,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      status_types:
+        | "OPEN"
+        | "DONE"
+        | "IN_PROGRESS"
+        | "CANCELED"
+        | "MISSING_INFORMATION"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -216,5 +261,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 

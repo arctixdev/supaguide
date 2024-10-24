@@ -1,31 +1,49 @@
+import { NextResponse } from "next/server";
 import { getSupabaseReqResClient } from "./supabase-utils/reqResClient";
-import { NextRequest, NextResponse } from 'next/server'
- 
-export async function middleware(request: NextRequest) {
-  const { supabase, response } = getSupabaseReqResClient({ request, });
-  const session = await supabase.auth.getUser();
-  const requestedPath = request.nextUrl.pathname;
-  const sessionUser = session?.data?.user;
+import { TENANT_MAP } from "./tenant-map";
+import { buildUrl, getHostnameAndPort } from "./utils/url-helpers";
 
-  const [tenant, ...restOfPath] = requestedPath.substring(1).split("/");
-  if (!/[a-z0-9-_]+/.test(tenant)) {
-    return NextResponse.rewrite(new URL("/not-found", request.url));
+export async function middleware(req) {
+  const { supabase } = getSupabaseReqResClient({ request: req });
+  const session = await supabase.auth.getSession();
+
+  const [hostname] = getHostnameAndPort(req);
+
+  if (hostname in TENANT_MAP === false) {
+    return NextResponse.rewrite(new URL("/not-found", req.url));
   }
-  const applicationPath = "/" + restOfPath.join("/");
+
+  const requestedPath = req.nextUrl.pathname;
+  const sessionUser = session.data?.session?.user;
+
+  // old way of parsing tenant from path
+  // const [tenant, ...restOfPath] = requestedPath.substr(1).split("/");
+  // const applicationPath = "/" + restOfPath.join("/");
+
+  const tenant = TENANT_MAP[hostname];
+  const applicationPath = requestedPath;
+
+  if (!/[a-z0-9-_]+/.test(tenant)) {
+    return NextResponse.rewrite(new URL("/not-found", req.url));
+  }
 
   if (applicationPath.startsWith("/tickets")) {
     if (!sessionUser) {
-      return NextResponse.redirect(new URL(`/${tenant}/`, request.url));
-    } 
-    else if (!sessionUser.app_metadata?.tenants.includes(tenant)) {
-      return NextResponse.rewrite(new URL('/not-found', request.url));
-    } 
-  }
-  else if (applicationPath === "/" && sessionUser?.app_metadata?.tenants.includes(tenant)) {
-    return NextResponse.redirect(new URL(`/${tenant}/tickets`, request.url));
+      return NextResponse.redirect(buildUrl("/", tenant, req));
+      // return NextResponse.redirect(new URL(`/${tenant}/`, req.url));
+    } else if (!sessionUser.app_metadata.tenants?.includes(tenant)) {
+      return NextResponse.rewrite(new URL("/not-found", req.url));
+    }
+  } else if (applicationPath === "/") {
+    if (sessionUser) {
+      return NextResponse.redirect(buildUrl("/tickets", tenant, req));
+      // return NextResponse.redirect(new URL(`/${tenant}/tickets`, req.url));
+    }
   }
 
-  return response.value;
+  return NextResponse.rewrite(
+    new URL(`/${tenant}${applicationPath}${req.nextUrl.search}`, req.url)
+  );
 }
 
 export const config = {

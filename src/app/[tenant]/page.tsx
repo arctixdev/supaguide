@@ -9,9 +9,6 @@ export default async function LoginPage({ searchParams, params }) {
   const supabaseAdmin = getSupabaseAdminClient();
   const { data, error } = await supabaseAdmin.from("tenants").select("*").eq("id", params.tenant).single();
 
-  console.warn(error);
-  console.log(data);
-
   if (error) { return <NotFound /> }
 
   const { name: tenantName } = data;
