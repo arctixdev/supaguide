@@ -31,7 +31,7 @@ export default function CreateTicket({ params }) {
                   description: description,
                   tenant: params.tenant,
                   created_by: 1,
-                  author_name: "John Doe",
+                  author_name: "John Doe!",
                 },
               ])
               .select()
