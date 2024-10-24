@@ -1,6 +1,8 @@
 import { getSupabaseAdminClient } from "@/supabase-utils/adminClient";
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 import { buildUrl } from "./url-helpers";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendOTPLink(email, type, tenant, request) {
   const supabaseAdmin = getSupabaseAdminClient();
@@ -26,11 +28,6 @@ export async function sendOTPLink(email, type, tenant, request) {
     request,
   );
 
-  const transporter = nodemailer.createTransport({
-    host: "localhost",
-    port: 54325,
-  });
-
   let mailSubject = "";
   let initialSentence = "";
   let sentenceEnding = "";
@@ -49,8 +46,8 @@ export async function sendOTPLink(email, type, tenant, request) {
     sentenceEnding = "log in";
   }
 
-  await transporter.sendMail({
-    from: "Akademia <contact@akademia.cc>",
+  await resend.emails.send({
+    from: "Arctix <contact@arctix.dev>",
     to: email,
     subject: mailSubject,
     html: `

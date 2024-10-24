@@ -19,6 +19,7 @@
     "nodemailer": "^6.9.15",
     "react": "^18",
     "react-dom": "^18",
+    "resend": "^4.0.0",
     "sass": "^1.79.4"
   },
   "devDependencies": {
