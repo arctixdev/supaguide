@@ -30,6 +30,8 @@ export default function CreateTicket({ params }) {
                   title: title,
                   description: description,
                   tenant: params.tenant,
+                  created_by: 1,
+                  author_name: "John Doe",
                 },
               ])
               .select()
