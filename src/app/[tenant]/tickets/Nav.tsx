@@ -46,7 +46,7 @@ export default function Nav({ tenant }) {
             Create New Ticket
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             role="button"
             href={urlPath("/tickets/users", tenant)}
@@ -56,7 +56,7 @@ export default function Nav({ tenant }) {
           >
             User List
           </Link>
-        </li>
+        </li> */}
       </ul>
 
       <ul>

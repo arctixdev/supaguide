@@ -1,5 +1,3 @@
-//
-
 import { getSupabaseCookiesUtilClient } from "@/supabase-utils/cookiesUtilClient";
 import { TICKET_STATUS } from "@/utils/constants";
 import { urlPath } from "@/utils/url-helpers";
@@ -9,10 +7,23 @@ import NotFound from "../not-found";
 export async function TicketList({ tenant, searchParams }) {
   const supabase = getSupabaseCookiesUtilClient();
 
+  let page = 1;
+
+  if (
+    Number.isInteger(Number(searchParams.page)) &&
+    Number(searchParams.page) > 1
+  ) {
+    page = Number(searchParams.page);
+  }
+
+  const startingPoint = (page - 1) * 6;
+
   const { data: tickets, error } = await supabase
     .from("tickets")
     .select("*")
-    .limit(6)
+    .range(startingPoint, startingPoint + 5)
+    .order("state", { ascending: true })
+    .order("created_at", { ascending: false })
     .eq("tenant", tenant);
 
   const { count, error: countError } = await supabase
@@ -20,7 +31,7 @@ export async function TicketList({ tenant, searchParams }) {
     .select("*", { count: "exact", head: true })
     .eq("tenant", tenant);
 
-  const moreRows = count - tickets.length > 0;
+  const moreRows = count - page * 6 > 0;
 
   if (error || countError) {
     console.error(error || countError);
@@ -51,9 +62,20 @@ export async function TicketList({ tenant, searchParams }) {
           ))}
         </tbody>
       </table>
-      <div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {page > 1 && (
+          <Link
+            role="button"
+            href={{ query: { page: page - 1, r: Math.random() } }}
+          >
+            Previous page
+          </Link>
+        )}
         {moreRows && (
-          <Link role="button" href={{ query: { page: 2 }}}>
+          <Link
+            role="button"
+            href={{ query: { page: page + 1, r: Math.random() } }}
+          >
             Next page
           </Link>
         )}
