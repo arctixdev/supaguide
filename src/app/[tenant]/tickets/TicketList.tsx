@@ -2,7 +2,6 @@ import { getSupabaseCookiesUtilClient } from "@/supabase-utils/cookiesUtilClient
 import { TICKET_STATUS } from "@/utils/constants";
 import { urlPath } from "@/utils/url-helpers";
 import Link from "next/link";
-import NotFound from "../not-found";
 
 export async function TicketList({ tenant, searchParams }) {
   const supabase = getSupabaseCookiesUtilClient();
@@ -35,7 +34,7 @@ export async function TicketList({ tenant, searchParams }) {
 
   if (error || countError) {
     console.error(error || countError);
-    return <NotFound />;
+    return <div>An error occurred while fetching the tickets</div>;
   }
 
   return (
