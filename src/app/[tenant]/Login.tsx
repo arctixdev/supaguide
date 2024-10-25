@@ -170,21 +170,43 @@ export const Login = ({ formType = "pw-login", tenant, tenantName }) => {
           </Link>
         </article>
       </form>
-      <h1>DEMO Login credentials</h1>
-      <p>
-        <strong>Email:</strong>
-        <br />
-        <strong>
-          <code>test@{tenant}-tickets.arctix.dev</code>
-        </strong>
-      </p>
-      <p>
-        <strong>Password:</strong>
-        <br />
-        <strong>
-          <code>supersecretpassword</code>
-        </strong>
-      </p>
+      <div>
+        <div>
+          <h1>DEMO Login credentials</h1>
+          <p>
+            <strong>Email:</strong>
+            <br />
+            <strong>
+              <code>test@{tenant}-tickets.arctix.dev</code>
+            </strong>
+          </p>
+          <p>
+            <strong>Password:</strong>
+            <br />
+            <strong>
+              <code>supersecretpassword</code>
+            </strong>
+          </p>
+        </div>
+        <div>
+          <h1>DEMO - links to other tenants</h1>
+          <p>
+            <Link href="https://hackclub-tickets.arctix.dev/">
+              Go to Hack Club Tickets DEMO
+            </Link>
+          </p>
+          <p>
+            <Link href="https://testorg-tickets.arctix.dev/">
+              Go to Test Org Tickets DEMO
+            </Link>
+          </p>
+          <p>
+            <Link href="https://awest-tickets.arctix.dev/">
+              Go to Test Awest DEMO
+            </Link>
+          </p>
+        </div>
+      </div>
     </>
   );
 };
