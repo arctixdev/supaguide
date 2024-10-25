@@ -119,7 +119,7 @@ export type Database = {
           created_by: number
           description: string
           id: number
-          state: Database["public"]["Enums"]["status_types"]
+          status: Database["public"]["Enums"]["status_types"]
           tenant: string
           title: string
         }
@@ -129,7 +129,7 @@ export type Database = {
           created_by: number
           description: string
           id?: number
-          state?: Database["public"]["Enums"]["status_types"]
+          status?: Database["public"]["Enums"]["status_types"]
           tenant: string
           title: string
         }
@@ -139,7 +139,7 @@ export type Database = {
           created_by?: number
           description?: string
           id?: number
-          state?: Database["public"]["Enums"]["status_types"]
+          status?: Database["public"]["Enums"]["status_types"]
           tenant?: string
           title?: string
         }

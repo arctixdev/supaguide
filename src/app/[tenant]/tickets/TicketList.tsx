@@ -21,7 +21,7 @@ export async function TicketList({ tenant, searchParams }) {
     .from("tickets")
     .select("*")
     .range(startingPoint, startingPoint + 5)
-    .order("state", { ascending: true })
+    .order("status", { ascending: true })
     .order("created_at", { ascending: false })
     .eq("tenant", tenant);
 
@@ -56,7 +56,7 @@ export async function TicketList({ tenant, searchParams }) {
                   {ticket.title}
                 </Link>
               </td>
-              <td>{TICKET_STATUS[ticket.state]}</td>
+              <td>{TICKET_STATUS[ticket.status]}</td>
             </tr>
           ))}
         </tbody>

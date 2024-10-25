@@ -19,7 +19,7 @@ export default async function TicketDetailsPage({ params }) {
     <article className={classes.ticketDetails}>
       <header>
         <strong>#{params.id}</strong> -{" "}
-        <strong className={classes.ticketStatusGreen}>{TICKET_STATUS[ticket.state]}</strong>
+        <strong className={classes.ticketStatusGreen}>{TICKET_STATUS[ticket.status]}</strong>
         <br />
         <small className={classes.authorAndDate}>
           Created by <strong>{ticket.author_name}</strong> at{" "}
